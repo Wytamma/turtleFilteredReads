@@ -11,7 +11,7 @@ rule all:
     input:
         'results/jobgraph.png',
         'rulegraph.png',
-        f'data/combined_genomes/{BLASTDBNAME}.fa',
+        f'data/BLASTDB/{BLASTDBNAME}.fa.nsq',
     params:
         mem = '1gb'
     
@@ -53,13 +53,42 @@ rule combine_and_unzip_genomes:
     input:
         expand("data/genomes/{GENOME_ID}.fa.gz", GENOME_ID = GENOME_IDS)
     output:
-        f"data/combined_genomes/{BLASTDBNAME}.fa",
+        f"data/BLASTDB/{BLASTDBNAME}.fa",
     params:
-        mem = '4gb'
+        mem = '1gb'
     shell:
         """
         gunzip -c {input} > {output}
         """
+
+rule make_blast_db:
+    """
+    Make blast db
+    """
+    input:
+        makeblastdb = 'tools/ncbi-magicblast-1.3.0/bin/makeblastdb',
+        combined_genomes = f"data/BLASTDB/{BLASTDBNAME}.fa",
+    output:
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nhd',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nhi',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nhr',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nin',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nog',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nsd',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nsi',
+        'data/BLASTDB/{params.BLASTDBNAME}.fa.nsq',
+    params:
+        mem = '1gb',
+        BLASTDBNAME = BLASTDBNAME
+    shell:
+        """
+        {input.makeblastdb} -in {input.combined_genomes} \
+        -dbtype nucl \
+        -title {params.BLASTDBNAME} \
+        -parse_seqids \
+        -hash_index
+        """
+
 
 rule generate_rulegraph:
     """

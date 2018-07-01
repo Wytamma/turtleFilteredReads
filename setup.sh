@@ -20,6 +20,16 @@ sleep 3
 conda install --yes -n turtleFilteredReads biopython=1.70
 conda install --yes -n turtleFilteredReads snakemake=5.1.4
 
+mkdir -p tools/
+cd tools
+wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/magicblast/LATEST/ncbi-magicblast-1.3.0-x64-linux.tar.gz -O magicblast.tar.gz
+# mac
+# wget ftp://ftp.ncbi.nlm.nih.gov/blast/executables/magicblast/LATEST/ncbi-magicblast-1.3.0-x64-macosx.tar.gz -O magicblast.tar.gz
+
+tar  -xvf magicblast.tar.gz
+rm -f magicblast.tar.gz
+cd ..
+
 echo ''
 echo '**************************************************'
 echo 'To activate the turtleFilteredReads environment, use'
