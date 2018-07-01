@@ -74,7 +74,7 @@ rule make_blast_db:
     output:
          expand("data/BLASTDB/{{BLASTDBNAME}}.fa.{ext}", ext = ['nhd', 'nhi', 'nhr', 'nin', 'nog', 'nsd', 'nsi', 'nsq']),
     params:
-        mem = '1gb',
+        mem = '4gb',
     shell:
         """
         {input.makeblastdb} -in {input.combined_genomes} \
