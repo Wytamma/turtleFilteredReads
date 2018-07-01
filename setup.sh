@@ -22,7 +22,7 @@ conda install --yes -n turtleFilteredReads snakemake=5.1.4
 
 echo ''
 echo '**************************************************'
-echo 'To activate the virusMAP environment, use'
-echo ' $ conda activate virusMAP' 
+echo 'To activate the turtleFilteredReads environment, use'
+echo ' $ conda activate turtleFilteredReads' 
 echo '**************************************************'
 echo ''
