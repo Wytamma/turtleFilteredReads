@@ -81,7 +81,8 @@ rule make_blast_db:
         -dbtype nucl \
         -title {wildcards.BLASTDBNAME} \
         -hash_index \
-        -max_file_sz '2GB'
+        -max_file_sz '2GB' \
+        -parse_seqids
         """
 
 rule magic_blast:
