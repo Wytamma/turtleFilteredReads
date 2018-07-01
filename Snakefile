@@ -2,7 +2,7 @@
 
 configfile: "config.json"
 
-GENOME_IDS = config["GENOME_IDS"].split()
+GENOME_IDS = str(config["GENOME_IDS"]).split()
 
 rule all:
     """
@@ -32,17 +32,17 @@ rule download_genomes:
 
         Entrez.email = 'wytamma.wirth@me.com'
 
-        with Entrez.esummary(db="assembly", id='{wildcards.GENOME_ID}', report="full") as esummary_handle:
+        with Entrez.esummary(db="assembly", id=wildcards.GENOME_ID, report="full") as esummary_handle:
             esummary_record = Entrez.read(esummary_handle)
         
         AssemblyName = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['AssemblyName']
         url = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['FtpPath_RefSeq']
-        url = url + url.split('/')[-1] + '_genomic.fna.gz'
+        url = f"{url}/{url.split('/')[-1]}_genomic.fna.gz"
 
         print("Downloading", AssemblyName)
-        r = requests.get(url, stream=True)
-        with open(output[0], 'wb') as f:
-            shutil.copyfileobj(r.raw, f)
+
+        shell(f'curl -L {url} -o {output}')
+        
         
 
 rule generate_rulegraph:
