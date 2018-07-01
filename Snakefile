@@ -53,7 +53,7 @@ rule combine_and_unzip_genomes:
     input:
         expand("data/genomes/{GENOME_ID}.fa.gz", GENOME_ID = GENOME_IDS)
     output:
-        f"data/BLASTDB/{BLASTDBNAME}.fa",
+        "data/BLASTDB/{BLASTDBNAME}.fa",
     params:
         mem = '1gb'
     shell:
@@ -67,24 +67,23 @@ rule make_blast_db:
     """
     input:
         makeblastdb = 'tools/ncbi-magicblast-1.3.0/bin/makeblastdb',
-        combined_genomes = f"data/BLASTDB/{BLASTDBNAME}.fa",
+        combined_genomes = "data/BLASTDB/{BLASTDBNAME}.fa",
     output:
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nhd',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nhi',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nhr',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nin',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nog',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nsd',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nsi',
-        'data/BLASTDB/{params.BLASTDBNAME}.fa.nsq',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nhd',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nhi',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nhr',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nin',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nog',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nsd',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nsi',
+        'data/BLASTDB/{BLASTDBNAME}.fa.nsq',
     params:
         mem = '1gb',
-        BLASTDBNAME = BLASTDBNAME
     shell:
         """
         {input.makeblastdb} -in {input.combined_genomes} \
         -dbtype nucl \
-        -title {params.BLASTDBNAME} \
+        -title {wildcards.BLASTDBNAME} \
         -parse_seqids \
         -hash_index
         """
