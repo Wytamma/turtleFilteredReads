@@ -103,7 +103,7 @@ rule magic_blast:
         """
         {input.magicblast} -query {input.trimmed_reads[0]} \
         -query_mate {input.trimmed_reads[1]} \
-        -db data/BLASTDB/ \
+        -db `pwd`/data/BLASTDB/ \
         -infmt fastq \
         -out {output} \
         -num_threads {threads}
