@@ -32,7 +32,7 @@ download_genomes:
 
         Entrez.email = 'wytamma.wirth@me.com'
 
-        with Entrez.esummary(db="assembly", id={wildcards.GENOME_ID}, report="full") as handle:
+        with Entrez.esummary(db="assembly", id='{wildcards.GENOME_ID}', report="full") as handle:
             esummary_record = Entrez.read(esummary_handle)
         
         AssemblyName = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['AssemblyName']
@@ -41,7 +41,7 @@ download_genomes:
 
         print("Downloading", AssemblyName)
         r = requests.get(url, stream=True)
-        with open('data/genomes/{wildcards.GENOME_ID}+".fa.gz"', 'wb') as f:
+        with open('data/genomes/{wildcards.GENOME_ID}'+'.fa.gz', 'wb') as f:
             shutil.copyfileobj(r.raw, f)
         
 
