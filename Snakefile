@@ -21,7 +21,7 @@ rule download_genomes:
     Download genomes from ncbi ftp server
     """
     output:
-        expand("data/genomes/{GENOME_ID}.fa.gz", GENOME_ID = GENOME_IDS)
+        "data/genomes/{GENOME_ID}.fa.gz",
     params:
         mem = '1gb'
     run:
@@ -41,7 +41,7 @@ rule download_genomes:
 
         print("Downloading", AssemblyName)
         r = requests.get(url, stream=True)
-        with open('data/genomes/{wildcards.GENOME_ID}'+'.fa.gz', 'wb') as f:
+        with open(output[0], 'wb') as f:
             shutil.copyfileobj(r.raw, f)
         
 
