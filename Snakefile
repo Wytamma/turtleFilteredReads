@@ -91,7 +91,7 @@ rule magic_blast:
     input:
         magicblast = 'tools/ncbi-magicblast-1.3.0/bin/magicblast',
         trimmed_reads = expand("data/trimmed_reads/{{srr_id}}_{R}_trimmed.fq.gz", R = [1,2]),
-        expand("data/BLASTDB/{{BLASTDBNAME}}.fa.{ext}", ext = ['nhd', 'nhi', 'nhr', 'nin', 'nog', 'nsd', 'nsi', 'nsq']),
+        blastdb = expand("data/BLASTDB/{{BLASTDBNAME}}.fa.{ext}", ext = ['nhd', 'nhi', 'nhr', 'nin', 'nog', 'nsd', 'nsi', 'nsq']),
     params:
         mem = '4gb'
     threads: 12
