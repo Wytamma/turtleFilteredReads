@@ -36,7 +36,9 @@ rule download_genomes:
             esummary_record = Entrez.read(esummary_handle)
         
         AssemblyName = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['AssemblyName']
-        url = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['FtpPath_RefSeq']
+        url = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['FtpPath_RefSeq'] or esummary_record['DocumentSummarySet']['DocumentSummary'][0]['FtpPath_GenBank']
+        if url[-1] == '/':
+            url = url[:-1]
         url = f"{url}/{url.split('/')[-1]}_genomic.fna.gz"
 
         print("Downloading", AssemblyName)
