@@ -4,6 +4,9 @@ configfile: "config.json"
 
 GENOME_IDS = str(config["GENOME_IDS"]).split()
 BLASTDBNAME = config["BLASTDBNAME"]
+SRA_IDS = config["SRA_IDS"].split()
+
+
 rule all:
     """
     Collect the main outputs of the workflow.
@@ -11,7 +14,7 @@ rule all:
     input:
         'results/jobgraph.png',
         'rulegraph.png',
-        f'data/BLASTDB/{BLASTDBNAME}.fa.nsq',
+        expand("resutls/magicblast/{BLASTDBNAME}.{srr_id}.sam", srr_id = SRA_IDS, BLASTDBNAME = BLASTDBNAME),
     params:
         mem = '1gb'
     
@@ -69,14 +72,7 @@ rule make_blast_db:
         makeblastdb = 'tools/ncbi-magicblast-1.3.0/bin/makeblastdb',
         combined_genomes = "data/BLASTDB/{BLASTDBNAME}.fa",
     output:
-        'data/BLASTDB/{BLASTDBNAME}.fa.nhd',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nhi',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nhr',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nin',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nog',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nsd',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nsi',
-        'data/BLASTDB/{BLASTDBNAME}.fa.nsq',
+         expand("data/BLASTDB/{{BLASTDBNAME}}.fa.{ext}", ext = ['nhd', 'nhi', 'nhr', 'nin', 'nog', 'nsd', 'nsi', 'nsq']),
     params:
         mem = '1gb',
     shell:
@@ -84,10 +80,32 @@ rule make_blast_db:
         {input.makeblastdb} -in {input.combined_genomes} \
         -dbtype nucl \
         -title {wildcards.BLASTDBNAME} \
-        -parse_seqids \
-        -hash_index
+        -hash_index \
         """
 
+rule magic_blast:
+    """
+    Run magic_blast! trimmed fastq files.
+    # virusMAP can trim reads
+    """
+    input:
+        magicblast = 'tools/ncbi-magicblast-1.3.0/bin/magicblast',
+        trimmed_reads = expand("data/trimmed_reads/{{srr_id}}_{R}_trimmed.fq.gz", R = [1,2]),
+        expand("data/BLASTDB/{{BLASTDBNAME}}.fa.{ext}", ext = ['nhd', 'nhi', 'nhr', 'nin', 'nog', 'nsd', 'nsi', 'nsq']),
+    params:
+        mem = '4gb'
+    threads: 12
+    output:
+        'resutls/magicblast/{BLASTDBNAME}.{srr_id}.sam'
+    shell:
+        """
+        {input.magicblast} -query {input.trimmed_reads[0]} \
+        -query_mate {input.trimmed_reads[1]} \
+        -db data/BLASTDB/ \
+        -infmt fastq \
+        -out {output} \
+        -num_threads {threads}
+        """
 
 rule generate_rulegraph:
     """
