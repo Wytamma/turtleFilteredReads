@@ -16,7 +16,7 @@ rule all:
         mem = '1gb'
     
 
-download_genomes:
+rule download_genomes:
     """
     Download genomes from ncbi ftp server
     """
