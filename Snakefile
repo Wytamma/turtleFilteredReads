@@ -46,6 +46,20 @@ rule download_genomes:
         shell(f'curl -L {url} -o {output}')
         
         
+rule combine_and_unzip_genomes:
+    """
+    Combines the downloaded genomes in prep for baslts databse
+    """
+    input:
+        expand("data/genomes/{GENOME_ID}.fa.gz", GENOME_ID = GENOME_IDS)
+    output:
+        "data/combined_genomes/{config["BLASTDBNAME"]}.fa",
+    params:
+        mem = '4gb'
+    shell:
+        """
+        gunzip -c {input} > {output}
+        """
 
 rule generate_rulegraph:
     """
