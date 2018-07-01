@@ -32,7 +32,7 @@ rule download_genomes:
 
         Entrez.email = 'wytamma.wirth@me.com'
 
-        with Entrez.esummary(db="assembly", id='{wildcards.GENOME_ID}', report="full") as handle:
+        with Entrez.esummary(db="assembly", id='{wildcards.GENOME_ID}', report="full") as esummary_handle:
             esummary_record = Entrez.read(esummary_handle)
         
         AssemblyName = esummary_record['DocumentSummarySet']['DocumentSummary'][0]['AssemblyName']
