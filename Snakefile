@@ -1,8 +1,8 @@
+#TODO: de novo 
 
 configfile: "config.json"
 
 GENOME_IDS = config["GENOME_IDS"].split()
-
 
 rule all:
     """
