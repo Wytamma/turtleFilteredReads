@@ -3,7 +3,7 @@
 configfile: "config.json"
 
 GENOME_IDS = str(config["GENOME_IDS"]).split()
-
+BLASTDBNAME = config["BLASTDBNAME"]
 rule all:
     """
     Collect the main outputs of the workflow.
@@ -11,7 +11,7 @@ rule all:
     input:
         'results/jobgraph.png',
         'rulegraph.png',
-        expand("data/genomes/{GENOME_ID}.fa.gz", GENOME_ID = GENOME_IDS)
+        f'data/combined_genomes/{BLASTDBNAME}.fa',
     params:
         mem = '1gb'
     
@@ -53,7 +53,7 @@ rule combine_and_unzip_genomes:
     input:
         expand("data/genomes/{GENOME_ID}.fa.gz", GENOME_ID = GENOME_IDS)
     output:
-        "data/combined_genomes/{config["BLASTDBNAME"]}.fa",
+        f"data/combined_genomes/{BLASTDBNAME}.fa",
     params:
         mem = '4gb'
     shell:
